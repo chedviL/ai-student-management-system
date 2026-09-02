@@ -1,73 +1,87 @@
-# React + TypeScript + Vite
+# AI-Powered Student Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack management system built with **React, TypeScript, Supabase, PostgreSQL and OpenAI**, featuring an integrated AI assistant for natural-language access to structured application data.
 
-Currently, two official plugins are available:
+The application was developed as a real-world management system and later extended with an AI layer that allows users to retrieve information without manually navigating between multiple screens.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The interface is designed for Hebrew-speaking users and includes full **RTL support**.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Overview
 
-## Expanding the ESLint configuration
+The system provides centralized management of student records, contact information, payments and organizational data.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+In addition to the traditional user interface, the application includes an AI assistant that enables users to ask questions in natural language and receive answers based on live data stored in Supabase.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Examples include:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Finding a student by name
+- Retrieving student details
+- Checking payment balances
+- Retrieving contact information
+- Searching students by location
+- Answering aggregate questions about system data
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## AI Assistant
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The AI assistant is implemented using **OpenAI Tool Calling**.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Instead of giving the language model unrestricted access to the database or allowing it to generate arbitrary SQL, the backend exposes a controlled set of predefined tools.
+
+The model:
+
+1. Understands the user's natural-language request
+2. Selects the appropriate tool
+3. Calls a Supabase Edge Function
+4. Retrieves structured data from PostgreSQL
+5. Generates a clear natural-language response
+
+This architecture provides a safer and more predictable way to integrate AI with structured organizational data.
+
+---
+
+## Screenshots
+
+### AI Assistant
+
+![AI Assistant](docs/screenshots/ai-assistant.png)
+
+A dedicated conversational interface that allows non-technical users to query system data using everyday language.
+
+### Natural-Language Data Query
+
+![Natural Language Query](docs/screenshots/ai-query-example.png)
+
+The assistant can perform aggregate queries over live system data and return a readable answer without requiring the user to write SQL or manually build reports.
+
+### Student Profile
+
+![Student Profile](docs/screenshots/student-profile.png)
+
+A structured student profile displaying relevant information in a clear RTL interface.
+
+---
+
+## Architecture
+
+```text
+User
+  ↓
+React + TypeScript Frontend
+  ↓
+Supabase Edge Function
+  ↓
+OpenAI LLM
+  ↓
+Tool Calling
+  ↓
+Controlled Application Tools
+  ↓
+Supabase / PostgreSQL
+  ↓
+Structured Result
+  ↓
+Natural-Language Response
